@@ -1,4 +1,12 @@
 1. Project Description
+    Consider a 2D system containing a large number of identical non-interacting non-relativistic (subject to change) particles confined by thermal walls with temperature T. The particles moves freely governed by the equation of motion
+    m\ddot{r} = 0
+    In general, we might have non-trivial potentials on the right-hand-side of the above equation, but for simplicity we set it to 0 for now. When a particle hit the wall, it has probability p to have an elastic collision, leading to 
+    v_{\bot} \to -v_{\bot}, v_{\parallel} \to v_{\parallel}
+    ie change the sign for the perpendicular component and leave the parallel component unchanged. The particle also has probability 1-p to have a thermal reflection where the wall acts as a thermal bath at temperature T. The particle picks up a new velocity sampled from a Maxwell-Boltzmann distribution of thermal velocities at that temperature
+    f(v_x, v_y) = (m / (2 \pi k_B T))^{3/2} e^{- (m (v_x^2 + v_y^2)) / (2k_B T)}
+    This random resampling 
+
     
     
 
