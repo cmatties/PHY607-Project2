@@ -1,0 +1,31 @@
+1. Main methods
+    a. Initialize a run of the simulation, given an initial probability distribution for speeds, number of particles, particle type, and thermal bath temperature
+    b. Evolve 1 time step
+        i. For each particle, get interactions with other particles and evolve velocity & position
+    ii. For each particle, check for interactions with walls and update velocity according to rule, update position to make sure particles don't get out of bounds
+        iii. Track the number of 
+    c. Run simulation for N time steps
+        i. For each time step, record the speed distribution, the total perpendicular components of the velocities involved in wall collisions
+    
+2. Parent class: particle
+    a. Utility methods: Get/set velocity, get/set position, get speed
+    b. Method to get interaction rule with walls: See equation (3)
+
+3. Subclass 1: Central force particles
+    a. Inherits utility & wall-interaction methods from Particle class
+        i. Returns v_new
+    b. Method to get interaction rule with other particles: 1/r potential, i.e. Coulomb force between positively charged particles
+        i. Parameters: One other particle's position, velocity
+        ii. Returns v_new
+
+4. Subclass 2: Particles without central force
+    a. Inherits utility & wall-interaction methods from Particle class
+        i. Returns v_new
+    b. Particle-particle interactions: If particles are within a small distance of each other, do an elastic collision. Otherwise, particles do not interact
+        i. Parameters: One other particle's position, velocity
+        ii. Returns v_new
+    
+5. Plots
+    a. Initial and final speed distributions for a given simulation
+    b. Mean kinetic energy per particle over time
+    c. Pressure, as computed via proposal eqn. 6, over time
