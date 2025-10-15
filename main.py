@@ -23,3 +23,22 @@ def initialize_simulation(
         ]
     )
     return particle_list
+
+
+def evolve_timestep(particle_list, t, dt):
+    new_velocities = []
+    new_positions = []
+    for particle in particle_list:
+        v_new = particle.get_v_update(particle_list, t, dt)
+        r_new = v_new * dt
+
+        new_velocities.append(v_new)
+        new_positions.append(r_new)
+
+    wall_interactions = 0
+
+    for i in range(len(particle_list)):
+        particle_list[i].update_velocity(new_velocities[i])
+        particle_list[i].update_position(new_positions[i])
+        wall_interactions += particle_list[i].get_wall_interaction()
+    return particle_list
