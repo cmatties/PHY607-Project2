@@ -62,7 +62,7 @@ def harmonic_equilibrium_checks(
     plt.plot(centers, gaussian(centers, 0.0, kB*T_bath/kx), label='theory N(0, kT/kx)')
     plt.xlabel('x')
     plt.ylabel('pdf')
-    plt.title('Harmonic trap: x-marginal')
+    plt.title('Position (x) at equilibrium')
     plt.legend()
     plt.tight_layout()
 
@@ -70,7 +70,7 @@ def harmonic_equilibrium_checks(
     n,b,_ = plt.hist(vxs, bins=40, density=True, label='sim p(vx)')
     centers = 0.5*(b[:-1]+b[1:])
     plt.plot(centers, gaussian(centers, 0.0, kB*T_bath/m), label='theory N(0, kT/m)')
-    plt.xlabel('v_x')
+    plt.xlabel(r'$v_x$')
     plt.ylabel('pdf')
     plt.title('Velocities at equilibrium')
     plt.legend()
