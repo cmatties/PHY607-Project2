@@ -35,7 +35,7 @@ class ParticleList:
         self.T = T  # temperature
         self.p_specular = p_specular  # probability of specular reflection
         self.rng = np.random.default_rng(seed)  # random number generator
-        self.N = len(x_positions)
+        self.N = r_array.shape[0]
 
     # -------- Utility functions --------
     # View and modify the whole arrays of positions and velocities
