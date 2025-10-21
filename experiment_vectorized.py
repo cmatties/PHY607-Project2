@@ -59,8 +59,8 @@ def harmonic_equilibrium_checks(
     for s in range(steps):
         parts.step(dt)
         if s % sample_every == 0:
-            velocities = parts.get_velocity_array
-            positions = parts.get_position_array
+            velocities = parts.get_velocity_array()
+            positions = parts.get_position_array()
 
             xs = np.append(xs, positions[:, 0] - x0)
             vxs = np.append(vxs, velocities[:, 0])
