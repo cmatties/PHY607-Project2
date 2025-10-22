@@ -100,7 +100,7 @@ class ParticleList:
         vx_new = vx*(1-left_collisions) - vx*left_collisions*(random<p) + np.abs(diffused_vx*left_collisions*(random>=p))
         vy_new = vy*(1-left_collisions) + diffused_vy*left_collisions*(random>=p)
         
-        dp_sum += np.sum(m*(vx_new-vx))
+        dp_sum += np.sum(np.abs(m*(vx_new-vx)))
         
         vx = vx_new.copy()
         vy = vy_new.copy()
