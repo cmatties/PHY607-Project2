@@ -23,14 +23,18 @@ def sample_velocity(T, m, rng, N_particles):
     vy = speed*np.sin(uniform_random_angle)
     return vx, vy
 
-def rejection_sample_gauss(rng, n_samples):
+def gaussian(mean, sigma, rng, size):
     """
-    Sample theta in [0, pi/2] with density cos(theta).
+    Sample from a Gaussian distribution with rejection sampling.
     """
+    gauss = lambda x: 1/(sigma*np.sqrt(2*np.pi))*np.exp(-.5*(x-mean)**2/sigma**2)
+    
     out = []
-    while len(out) < n_samples:
-        th = rng.uniform(0.0, 0.5*np.pi)
-        y = rng.uniform(0.0, 1.0)
-        if y <= np.cos(th):
+    N = np.prod(size)
+    while len(out) < N:
+        x = rng.uniform(mean-5*sigma, mean+5*sigma)
+        y = rng.uniform(0.0, gauss(mean))
+        if y <= gauss(x):
             out.append(th)
-    return np.array(out)
+    out_array = np.array(out)
+    return np.reshape(out_array, shape = size)
