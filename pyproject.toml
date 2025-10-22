@@ -1,0 +1,29 @@
+# Packaging guidelines and documentation are here
+# https://packaging.python.org/en/latest/tutorials/packaging-projects/
+# https://packaging.python.org/en/latest/specifications/declaring-project-metadata/#declaring-project-metadata
+
+[project]
+name = "PHY607-Project2-Guo-Matties"
+version = "1.0.0"
+dependencies = [
+   "numpy",
+   "matplotlib",
+   "timeit"
+]
+authors = [
+  { name="Fangyi Guo", email="fguo10@syr.edu" },
+  { name="Carter Matties", email = "camattie@syr.edu"}
+]
+description = "PHY607 Project 2"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.scripts]
+harmonic = "thermobox:harmonic_potential_plots"
+distribution = "thermobox:maxwell_boltzmann_distribution"
+pressure = "thermobox:pressure_temp"
