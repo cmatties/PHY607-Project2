@@ -4,7 +4,7 @@ from Particles import kB, HarmonicParticleList, HardParticleList
 from sampling import gaussian_rejection_sampling
 import timeit
 
-def benchmark(seed = 1)
+def benchmark(seed = 1):
 
     N_list = np.array([50, 75, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600])
     box = 1

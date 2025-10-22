@@ -1,5 +1,6 @@
 def harmonic_potential_plots():
     import argparse
+    import matplotlib.pyplot as plt
     from .experiment import harmonic_equilibrium_checks
     
     parser = argparse.ArgumentParser()
@@ -16,6 +17,7 @@ def harmonic_potential_plots():
 
 def maxwell_boltzmann_distribution():
     import argparse
+    import matplotlib.pyplot as plt
     from .experiment import mb_speed_histogram
     
     parser = argparse.ArgumentParser()
@@ -32,7 +34,8 @@ def maxwell_boltzmann_distribution():
     
 def pressure_temp():
     import argparse
-    from .experiment import mb_speed_histogram
+    import matplotlib.pyplot as plt
+    from .experiment import pressure_temperature
     
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type = int, help = "Specify a seed for random number generation")
@@ -48,6 +51,7 @@ def pressure_temp():
    
 def benchmarking():
     import argparse
+    import matplotlib.pyplot as plt
     from .benchmarking import benchmark
     
     parser = argparse.ArgumentParser()
