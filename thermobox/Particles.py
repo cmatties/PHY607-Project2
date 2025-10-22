@@ -2,9 +2,12 @@ import numpy as np
 from sampling import sample_velocity
 
 kB = 1.0  # Boltzmann constant in reduced units
-epsilon = 1e-12 # Definition of "very close" for the purposes of collisions
+epsilon = 1e-12  # Definition of "very close" for the purposes of collisions
+
 
 class ParticleList:
+    """General particle parent class"""
+
     def __init__(
         self,
         r_array,
@@ -17,7 +20,7 @@ class ParticleList:
         seed=None,
     ):
         self.r_array = r_array  # position
-        self.v_array = v_array # velocity
+        self.v_array = v_array  # velocity
         self.m = m  # mass
         self.Lx = Lx  # box length in x
         self.Ly = Ly  # box length in y
@@ -29,34 +32,133 @@ class ParticleList:
     # -------- Utility functions --------
     # View and modify the whole arrays of positions and velocities
     def get_position_array(self):
+        """
+        Get the positions of all particles
+
+        Returns
+        -------
+        numpy.ndarray
+            Particle position array with shape (# of particles, 2)
+        """
         return self.r_array.copy()
 
     def set_position_array(self, r_new):
+        """
+        Set the positions of all particles
+
+        Parameters
+        ----------
+        r_new : numpy.ndarray
+            Array of new particles positions
+        """
         self.r_array = r_new
 
     def get_velocity_array(self):
+        """
+        Get the velocities of all particles
+
+        Returns
+        -------
+        numpy.ndarray
+            Particle velocity array with shape (# of particles, 2)
+        """
         return self.v_array.copy()
 
     def set_velocity_array(self, v_new):
+        """
+        Set the positions of all particles
+
+        Parameters
+        ----------
+        r_new : numpy.ndarray
+            Array of new particles positions
+        """
         self.v_array = v_new
 
     def get_speed_array(self):
+        """
+        Get the speeds of all particles
+
+        Returns
+        -------
+        numpy.ndarray
+            List of particle speeds
+        """
         return np.sqrt(self.v[:, 0] ** 2 + self.v[:, 1] ** 2)
 
     # View and modify the position and velocity of a single particle
     def get_position_single(self, index):
+        """
+        Get the position of a single particle
+
+        Parameters
+        ----------
+        index : int
+            Index of the particle of interest
+
+        Returns
+        -------
+        numpy.ndarray
+            Position vector of the specified particle with shape (2,)
+        """
         return self.r_array[index, :]
 
     def set_position_single(self, index, r_new):
+        """
+        Set the position of a single particle
+
+        Parameters
+        ----------
+        index : int
+            Index of the particle of interest
+        r_new : numpy.ndarray
+            New position, shape (2,)
+        """
         self.r_array[index, :] = r_new
 
     def get_velocity_single(self, index):
+        """
+        Get the velocity of a single particle
+
+        Parameters
+        ----------
+        index : int
+            Index of the particle of interest
+
+        Returns
+        -------
+        numpy.ndarray
+            Velocity vector of the specified particle with shape (2,)
+        """
         return self.v_array[index, :]
 
     def set_velocity_single(self, index, v_new):
+        """
+        Set the velocity of a single particle
+
+        Parameters
+        ----------
+        index : int
+            Index of the particle of interest
+        r_new : numpy.ndarray
+            New velocity, shape (2,)
+        """
         self.v_array[index, :] = v_new
 
     def get_speed_single(self, index):
+        """
+        Get the speed of a single particle
+
+        Parameters
+        ----------
+        index : int
+            Index of the particle of interest
+
+        Returns
+        -------
+        float
+            Speed of the specified particle
+        """
         return np.sqrt(self.v[index, 0] ** 2 + self.v[index, 1] ** 2)
 
     # -------- Motion --------
@@ -65,7 +167,14 @@ class ParticleList:
         return np.array([0.0, 0.0], dtype=np.float64)
 
     def move(self, dt):
-        """Evolve particle position and velocity by time step dt using Symplectic Euler method."""
+        """Evolve particle position and velocity by time step dt using Symplectic Euler method.
+        This method evolves the system in-place.
+
+        Parameters
+        ----------
+        dt : float
+            Time step
+        """
         a_array = self.acceleration(self.r_array)
         self.v_array += dt * a_array
         self.r_array += dt * self.v_array
@@ -77,9 +186,12 @@ class ParticleList:
         - specular reflection with probability p_specular
         - diffuse thermal reflection (Maxwell-Boltzmann) otherwise
 
-        Returns:
-        dp_sum: total momentum transfer magnitude (for pressure)
-        n_collisions: number of wall hits this step
+        Returns
+        -------
+        dp_sum : float
+            total momentum transfer magnitude (for pressure)
+        n_collisions : int
+            number of wall hits this step
         """
         dp_sum = 0.0
         n_collisions = 0
@@ -89,91 +201,130 @@ class ParticleList:
         p = self.p_specular
         T = self.T
         N_particles = self.N
-        
+
         # Left wall
         diffused_vx, diffused_vy = sample_velocity(T, m, self.rng, N_particles)
-        random = self.rng.uniform(size = N_particles)
-        
+        random = self.rng.uniform(size=N_particles)
+
         left_collisions = x < epsilon
         n_collisions += np.sum(left_collisions)
-        
-        vx_new = vx*(1-left_collisions) - vx*left_collisions*(random<p) + np.abs(diffused_vx*left_collisions*(random>=p))
-        vy_new = vy*(1-left_collisions) + diffused_vy*left_collisions*(random>=p)
-        
-        dp_sum += np.sum(np.abs(m*(vx_new-vx)))
-        
+
+        vx_new = (
+            vx * (1 - left_collisions)
+            - vx * left_collisions * (random < p)
+            + np.abs(diffused_vx * left_collisions * (random >= p))
+        )
+        vy_new = vy * (1 - left_collisions) + diffused_vy * left_collisions * (
+            random >= p
+        )
+
+        dp_sum += np.sum(np.abs(m * (vx_new - vx)))
+
         vx = vx_new.copy()
         vy = vy_new.copy()
-        
-        x = x*(1-left_collisions)+epsilon*left_collisions
+
+        x = x * (1 - left_collisions) + epsilon * left_collisions
 
         # Right wall
         diffused_vx, diffused_vy = sample_velocity(T, m, self.rng, N_particles)
         diffused_vx *= -1
-        random = self.rng.uniform(size = N_particles)
-        
-        right_collisions = x > self.Lx-epsilon
+        random = self.rng.uniform(size=N_particles)
+
+        right_collisions = x > self.Lx - epsilon
         n_collisions += np.sum(right_collisions)
-        
+
         # Set new velocities based on whether a collisions has occurred, and whether that collision is specular or diffuse
-        vx_new = vx*(1-right_collisions) - vx*right_collisions*(random<p) - np.abs(diffused_vx*right_collisions*(random>=p))
-        vy_new = vy*(1-right_collisions) + diffused_vy*right_collisions*(random>=p)
-        
-        dp_sum += np.sum(np.abs(m*(vx_new-vx)))
-        
+        vx_new = (
+            vx * (1 - right_collisions)
+            - vx * right_collisions * (random < p)
+            - np.abs(diffused_vx * right_collisions * (random >= p))
+        )
+        vy_new = vy * (1 - right_collisions) + diffused_vy * right_collisions * (
+            random >= p
+        )
+
+        dp_sum += np.sum(np.abs(m * (vx_new - vx)))
+
         vx = vx_new.copy()
         vy = vy_new.copy()
-        
-        x = x*(1-right_collisions)+(self.Lx-epsilon)*right_collisions
+
+        x = x * (1 - right_collisions) + (self.Lx - epsilon) * right_collisions
 
         # Bottom wall
         diffused_vy, diffused_vx = sample_velocity(T, m, self.rng, N_particles)
-        random = self.rng.uniform(size = N_particles)
-        
+        random = self.rng.uniform(size=N_particles)
+
         bot_collisions = x < epsilon
         n_collisions += np.sum(bot_collisions)
-        
+
         # Set new velocities based on whether a collisions has occurred, and whether that collision is specular or diffuse
-        vy_new = vy*(1-bot_collisions) - vy*bot_collisions*(random<p) + np.abs(diffused_vy*bot_collisions*(random>=p))
-        vx_new = vx*(1-bot_collisions) + diffused_vx*bot_collisions*(random>=p)
-        
+        vy_new = (
+            vy * (1 - bot_collisions)
+            - vy * bot_collisions * (random < p)
+            + np.abs(diffused_vy * bot_collisions * (random >= p))
+        )
+        vx_new = vx * (1 - bot_collisions) + diffused_vx * bot_collisions * (
+            random >= p
+        )
+
         # Add to total momentum transferred to the wall
-        dp_sum += np.sum(np.abs(m*(vy_new-vy)))
-        
+        dp_sum += np.sum(np.abs(m * (vy_new - vy)))
+
         vx = vx_new.copy()
         vy = vy_new.copy()
-        
-        y = y*(1-bot_collisions)+(epsilon)*bot_collisions
+
+        y = y * (1 - bot_collisions) + (epsilon) * bot_collisions
 
         # Top wall
         diffused_vy, diffused_vx = sample_velocity(T, m, self.rng, N_particles)
         diffused_vy *= -1
-        random = self.rng.uniform(size = N_particles)
-        
+        random = self.rng.uniform(size=N_particles)
+
         top_collisions = x > (self.Ly - epsilon)
         n_collisions += np.sum(top_collisions)
-        
+
         # Set new velocities based on whether a collisions has occurred, and whether that collision is specular or diffuse
-        vy_new = vy*(1-top_collisions) - vy*top_collisions*(random<p) - np.abs(diffused_vy*top_collisions*(random>=p))
-        vx_new = vx*(1-bot_collisions) + diffused_vx*bot_collisions*(random>=p)
-        
+        vy_new = (
+            vy * (1 - top_collisions)
+            - vy * top_collisions * (random < p)
+            - np.abs(diffused_vy * top_collisions * (random >= p))
+        )
+        vx_new = vx * (1 - bot_collisions) + diffused_vx * bot_collisions * (
+            random >= p
+        )
+
         # Add to total momentum transferred to the wall
-        dp_sum += np.sum(np.abs(m*(vy_new-vy)))
-        
+        dp_sum += np.sum(np.abs(m * (vy_new - vy)))
+
         vx = vx_new.copy()
         vy = vy_new.copy()
-        
-        y = y*(1-top_collisions)+(self.Lx - epsilon)*bot_collisions
+
+        y = y * (1 - top_collisions) + (self.Lx - epsilon) * bot_collisions
 
         self.r_array = np.column_stack((x, y))
         self.v_array = np.column_stack((vx, vy))
         return dp_sum, n_collisions
 
     def particle_interact(self):
+        """Hook to implement particle-particle interactions in subclasses"""
         return
 
     def step(self, dt):
-        """Perform a full time step: move + wall interaction."""
+        """Perform a full time step.
+        Move, compute particle-particle interactions, compute wall interactions.
+
+        Parameters
+        ----------
+        dt : float
+            Time step
+
+        Returns
+        -------
+        float
+            Total particle-wall momentum transfer magnitude at this time step
+        int
+            Number of wall collisions at this time step
+        """
         self.move(dt)
         self.particle_interact()
         return self.wall_interact()
@@ -195,16 +346,40 @@ class HarmonicParticleList(ParticleList):
         self.omega_y = np.sqrt(self.ky / self.m)
 
     def acceleration(self, r=None):
+        """Compute acceleration for each particle at a given position
+
+        Parameters
+        ----------
+        r : np.ndarray, optional
+            Particle positions. If none are specified, the class's current position list is used.
+
+        Returns
+        -------
+        np.ndarray
+            Particle accelerations. Shape (# of particles, 2).
+        """
         if r is None:
             r = self.r_array
-        dx = r[:,0] - self.x0
-        dy = r[:,1] - self.y0
+        dx = r[:, 0] - self.x0
+        dy = r[:, 1] - self.y0
         ax = -(self.kx / self.m) * dx
         ay = -(self.ky / self.m) * dy
         return np.column_stack((ax, ay))
 
     # ---------- exact solution for error analysis ----------
     def analytic_state(self, t, r0=None, v0=None):
+        """Compute the state of the system analytically at a given time.
+        Neglects particle-wall interactions.
+
+        Parameters
+        ----------
+        t : float
+            Time
+        r0 : numpy.ndarray, optional
+            Initial position, defaults to class' current position. Shape (N, 2)
+        v0 : numpy.ndarray, optional
+            Initial velocity, defaults to class' current velocity. Shape (N,2)
+        """
         if r0 is None:
             r0 = self.r_array.copy()
         if v0 is None:
@@ -224,19 +399,57 @@ class HarmonicParticleList(ParticleList):
         )
 
     def kinetic_energy_array(self):
+        """Get kinetic energy for each particle.
+
+        Returns
+        -------
+        np.ndarray
+            List of kinetic energies at the current time step. Shape (N,).
+        """
         return 0.5 * self.m * (self.v_array[:, 0] ** 2 + self.v_array[:, 1] ** 2)
 
     def potential_energy_array(self):
+        """Get potential energy for each particle.
+
+        Returns
+        -------
+        np.ndarray
+            List of potential energies at the current time step. Shape (N,).
+        """
         return 0.5 * (
             self.kx * self.r_array[:, 0] ** 2 + self.ky * self.r_array[:, 1] ** 2
         )
 
     def kinetic_energy_single(self, index):
+        """Get kinetic energy for a single particle.
+
+        Parameters
+        ----------
+        index : int
+            Index of the particle of interest
+
+        Returns
+        -------
+        float
+            Kinetic energy at the current time step.
+        """
         return (
             0.5 * self.m * (self.v_array[index, 0] ** 2 + self.v_array[index, 1] ** 2)
         )
 
     def potential_energy_single(self, index):
+        """Get potential energy for a single particle.
+
+        Parameters
+        ----------
+        index : int
+            Index of the particle of interest
+
+        Returns
+        -------
+        float
+            Potential energy at the current time step.
+        """
         return 0.5 * (
             self.kx * self.r_array[index, 0] ** 2
             + self.ky * self.r_array[index, 1] ** 2
@@ -254,7 +467,7 @@ class HardParticleList(ParticleList):
 
     def particle_interact(self):
         """
-        Elastic 2-body collision
+        Compute elastic 2-body collisions.
         """
         dx = np.subtract.outer(self.r_array[:, 0], self.r_array[:, 0])
         dy = np.subtract.outer(self.r_array[:, 1], self.r_array[:, 1])
@@ -269,7 +482,7 @@ class HardParticleList(ParticleList):
         dist = dist * (dist > epsilon) + (dist <= epsilon) * epsilon
 
         # Get all the particle pairs which are overlapping
-        close_particles = (dist <= min_dist) * (1 - np.diag(np.ones(len(self.v_array))))  
+        close_particles = (dist <= min_dist) * (1 - np.diag(np.ones(len(self.v_array))))
 
         # Check approaching (relative velocity toward each other)
         nx = dx / dist
