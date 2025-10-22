@@ -28,7 +28,7 @@ def harmonic_equilibrium_checks(
     parts = []
     for i in range(N):
         # positions start near trap center
-        r = np.array([x0, y0]) + rng.normal(0, 1, 2)
+        r = np.array([x0, y0]) + rng.normal(0, 1, 2) 
         v = rng.normal(0, np.sqrt(kB*T_bath/m), 2)
         parts.append(
             HarmonicParticle(
@@ -86,7 +86,7 @@ def harmonic_equilibrium_checks(
 
 
 
-def mb_speed_histogram(N=200, radius=0.02, box=1.0, T_bath=1.0, p_specular=0.4, seed=3, dt=0.01, steps=40000, sample_every=40):
+def mb_speed_histogram(N=200, radius=0.005, box=1.0, T_bath=1.0, p_specular=0.4, seed=3, dt=0.01, steps=40000, sample_every=40):
     rng = np.random.default_rng(seed)
     parts=[]
     for i in range(N):

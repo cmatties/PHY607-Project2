@@ -167,7 +167,7 @@ def pressure_temperature(
     seed=7,
 ):
     rng = np.random.default_rng(seed)
-    perim = 2 * box
+    perim = 4 * box
     Ps, P_theory = [], []
 
     for T in T_list:
@@ -205,5 +205,5 @@ def pressure_temperature(
     plt.xlabel("T")
     plt.ylabel("Pressure")
     plt.legend()
-    plt.tight_layout()
     plt.title("Ideal-gas pressure from wall momentum flux")
+    plt.tight_layout()
