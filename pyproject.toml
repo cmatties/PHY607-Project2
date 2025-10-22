@@ -27,3 +27,4 @@ classifiers = [
 harmonic = "thermobox:harmonic_potential_plots"
 distribution = "thermobox:maxwell_boltzmann_distribution"
 pressure = "thermobox:pressure_temp"
+time_complexity = "thermobox:benchmarking"

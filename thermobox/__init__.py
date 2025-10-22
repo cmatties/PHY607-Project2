@@ -11,8 +11,8 @@ def harmonic_potential_plots():
         seed = args.seed
     else:
         seed = 1
-   harmonic_equilibrium_checks(seed = seed)
-   plt.show()
+    harmonic_equilibrium_checks(seed = seed)
+    plt.show()
 
 def maxwell_boltzmann_distribution():
     import argparse
@@ -27,8 +27,8 @@ def maxwell_boltzmann_distribution():
         seed = args.seed
     else:
         seed = 1
-   mb_speed_histogram(seed = seed)
-   plt.show()
+    mb_speed_histogram(seed = seed)
+    plt.show()
     
 def pressure_temp():
     import argparse
@@ -43,5 +43,21 @@ def pressure_temp():
         seed = args.seed
     else:
         seed = 1
-   pressure_temperature(seed = seed)
-   plt.show()
+    pressure_temperature(seed = seed)
+    plt.show()
+   
+def benchmarking():
+    import argparse
+    from .benchmarking import benchmark
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--seed", type = int, help = "Specify a seed for random number generation")
+    
+    args = parser.parse_args()
+    
+    if args.seed is not None:
+        seed = args.seed
+    else:
+        seed = 1
+    benchmark(seed = seed)
+    plt.show()
