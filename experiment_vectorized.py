@@ -78,38 +78,30 @@ def harmonic_equilibrium_checks(
     Kavg, Vavg = float(np.mean(Ks)), float(np.mean(Vs))
 
     plt.figure()
-    n, b, _ = plt.hist(xs, bins=40, density=True, label="sim p(x-x0)")
-    centers = 0.5 * (b[:-1] + b[1:])
-    plt.plot(
-        centers, gaussian(centers, 0.0, kB * T_bath / kx), label="theory N(0, kT/kx)"
-    )
-    plt.xlabel("x")
-    plt.ylabel("pdf")
-    plt.title("Position (x) distribution")
+    n,b,_ = plt.hist(xs, bins=40, density=True, label='sim p(x-x0)')
+    centers = 0.5*(b[:-1]+b[1:])
+    plt.plot(centers, gaussian(centers, 0.0, kB*T_bath/kx), label='theory N(0, kT/kx)')
+    plt.xlabel('x')
+    plt.ylabel('pdf')
+    plt.title('Position (x) at equilibrium')
     plt.legend()
     plt.tight_layout()
 
     plt.figure()
-    n, b, _ = plt.hist(vxs, bins=40, density=True, label="sim p(vx)")
-    centers = 0.5 * (b[:-1] + b[1:])
-    plt.plot(
-        centers, gaussian(centers, 0.0, kB * T_bath / m), label="theory N(0, kT/m)"
-    )
-    plt.xlabel("v_x")
-    plt.ylabel("pdf")
-    plt.title("Velocities at equilibrium")
+    n,b,_ = plt.hist(vxs, bins=40, density=True, label='sim p(vx)')
+    centers = 0.5*(b[:-1]+b[1:])
+    plt.plot(centers, gaussian(centers, 0.0, kB*T_bath/m), label='theory N(0, kT/m)')
+    plt.xlabel(r'$v_x$')
+    plt.ylabel('pdf')
+    plt.title('Velocities at equilibrium')
     plt.legend()
     plt.tight_layout()
 
     plt.figure()
-    plt.plot(Ks, label="<K>/particle")
-    plt.plot(Vs, label="<V>/particle")
-    plt.axhline(
-        kB * T_bath, linestyle="--", color="tab:gray", label="kT (expected <K> and <V>)"
-    )
-    plt.xlabel("sample index")
-    plt.ylabel("energy")
-    plt.title(f"Equipartition: <K>≈<V> (avg K={Kavg:.3f}, V={Vavg:.3f})")
+    plt.plot(Ks, label='<K>/particle'); plt.plot(Vs, label='<V>/particle')
+    plt.axhline(kB*T_bath, linestyle='--', color='tab:gray', label='kT (expected <K> and <V>)')
+    plt.xlabel('sample index'); plt.ylabel('energy')
+    plt.title(f'Equipartition: <K>≈<V> (avg K={Kavg:.3f}, V={Vavg:.3f})')
     plt.legend()
     plt.tight_layout()
 
@@ -152,7 +144,7 @@ def mb_speed_histogram(
     plt.plot(vgrid, mb_pdf_speed(vgrid, m=1.0, T=T_bath), label="MB theory (2D)")
     plt.xlabel("speed")
     plt.ylabel("pdf")
-    plt.title(f"Velocity distribution with thermal walls at T={T_bath}")
+    plt.title('Thermal walls → Maxwell-Boltzmann')
     plt.legend()
     plt.tight_layout()
 
