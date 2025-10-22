@@ -23,7 +23,7 @@ def sample_velocity(T, m, rng, N_particles):
     vy = speed*np.sin(uniform_random_angle)
     return vx, vy
 
-def gaussian(mean, sigma, rng, size):
+def gaussian_rejection_sampling(mean, sigma, rng, size):
     """
     Sample from a Gaussian distribution with rejection sampling.
     """
@@ -35,6 +35,6 @@ def gaussian(mean, sigma, rng, size):
         x = rng.uniform(mean-5*sigma, mean+5*sigma)
         y = rng.uniform(0.0, gauss(mean))
         if y <= gauss(x):
-            out.append(th)
+            out.append(x)
     out_array = np.array(out)
-    return np.reshape(out_array, shape = size)
+    return out_array.reshape(size)

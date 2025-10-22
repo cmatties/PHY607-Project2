@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from Particles import kB, HarmonicParticleList, HardParticleList
-from sampling import gaussian
+from sampling import gaussian_rejection_sampling
 
 
 def gaussian(x, mu, sigma2):
@@ -122,7 +122,7 @@ def mb_speed_histogram(
     sigma=np.sqrt(kB*T_bath/1.0)
     
     r = rng.random(size = (N,2))*box
-    v = gaussian(0, sigma, rng, (N, 2))
+    v = gaussian_rejection_sampling(0, sigma, rng, (N, 2))
     
     parts = HardParticleList(r, v,radius=radius,
                 m=1.0,
@@ -168,7 +168,7 @@ def pressure_temperature(
         rng = np.random.default_rng(seed)
     
         r = rng.random(size = (N,2))*box
-        v = gaussian(0, 0.5, rng, (N, 2))
+        v = gaussian_rejection_sampling(0, 0.5, rng, (N, 2))
     
         parts = HardParticleList(r, v,
                     m=1.0,
