@@ -1,19 +1,8 @@
 import numpy as np
-from scipy.spatial import distance_matrix
-
+from sampling import sample_velocity
 
 kB = 1.0  # Boltzmann constant in reduced units
 epsilon = 1e-12 # Definition of "very close" for the purposes of collisions
-
-
-def sample_velocity(T, m, rng, N_particles):
-    """
-    Sample a velocity from the Maxwell-Boltzmann distribution at temperature T for a particle of given mass.
-    """
-    sigma = np.sqrt(kB * T / m)
-    velocity = rng.normal(0, sigma, size=(2, N_particles))  # 2D velocity
-    return velocity
-
 
 class ParticleList:
     def __init__(
@@ -120,6 +109,7 @@ class ParticleList:
 
         # Right wall
         diffused_vx, diffused_vy = sample_velocity(T, m, self.rng, N_particles)
+        diffused_vx *= -1
         random = self.rng.uniform(size = N_particles)
         
         right_collisions = x > self.Lx-epsilon
@@ -137,7 +127,7 @@ class ParticleList:
         x = x*(1-right_collisions)+(self.Lx-epsilon)*right_collisions
 
         # Bottom wall
-        diffused_vx, diffused_vy = sample_velocity(T, m, self.rng, N_particles)
+        diffused_vy, diffused_vx = sample_velocity(T, m, self.rng, N_particles)
         random = self.rng.uniform(size = N_particles)
         
         bot_collisions = x < epsilon
@@ -156,7 +146,8 @@ class ParticleList:
         y = y*(1-bot_collisions)+(epsilon)*bot_collisions
 
         # Top wall
-        diffused_vx, diffused_vy = sample_velocity(T, m, self.rng, N_particles)
+        diffused_vy, diffused_vx = sample_velocity(T, m, self.rng, N_particles)
+        diffused_vy *= -1
         random = self.rng.uniform(size = N_particles)
         
         top_collisions = x > (self.Ly - epsilon)

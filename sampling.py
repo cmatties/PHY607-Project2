@@ -1,5 +1,5 @@
 import numpy as np
-from particle import kB
+from Particles import kB
 
 def inverse_cdf_speed(u, m=1.0, T=1.0):
     """
@@ -9,8 +9,20 @@ def inverse_cdf_speed(u, m=1.0, T=1.0):
     sigma = np.sqrt(kB*T/m)
     return sigma * np.sqrt(-2.0*np.log(1.0 - u))
 
+def sample_velocity(T, m, rng, N_particles):
+    """
+    Sample a velocity from the Maxwell-Boltzmann distribution at temperature T for a particle of given mass.
+    """
+    
+    sigma = np.sqrt(kB * T / m)
+    uniform_random_speed = rng.uniform(size = N_particles)
+    uniform_random_angle = rng.uniform(size = N_particles)*np.pi
+    speed = inverse_cdf_speed(uniform_random_speed, m = m, T = T)
+    vx = speed*np.cos(uniform_random_angle)
+    vy = speed*np.sin(uniform_random_angle)
+    return np.column_stack(vx, vy)
 
-def rejection_sample_cos_theta(n_samples, rng):
+def rejection_sample_gauss(rng, n_samples):
     """
     Sample theta in [0, pi/2] with density cos(theta).
     """
