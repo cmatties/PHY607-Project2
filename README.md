@@ -12,3 +12,5 @@ You can also run functions in the `main.py` module to get any combination of the
  > WARNING
  > 
  > `mb_distribution` and `pressure` are both slow to run, taking ~5 minutes and ~8 minutes, respectively.
+ 
+Every function defaults to the parameters we used to generate the plots in the report, but you may change the rng seed using the `--seed` flag for any of the scripts.
