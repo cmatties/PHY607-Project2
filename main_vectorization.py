@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 from experiment_vectorized import harmonic_equilibrium_checks, mb_speed_histogram, pressure_temperature
 
 if __name__ == "__main__":
