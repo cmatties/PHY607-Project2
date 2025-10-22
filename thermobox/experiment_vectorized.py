@@ -167,7 +167,7 @@ def pressure_temperature(
     seed=7,
 ):
     rng = np.random.default_rng(seed)
-    perim = 4 * box
+    perim = 2 * box
     Ps, P_theory = [], []
 
     for T in T_list:
