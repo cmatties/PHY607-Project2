@@ -1,5 +1,6 @@
 import numpy as np
-from Particles import kB
+
+kB = 1.0 # Boltzmann constant in reduced units
 
 def inverse_cdf_speed(u, m=1.0, T=1.0):
     """
@@ -20,7 +21,7 @@ def sample_velocity(T, m, rng, N_particles):
     speed = inverse_cdf_speed(uniform_random_speed, m = m, T = T)
     vx = speed*np.cos(uniform_random_angle)
     vy = speed*np.sin(uniform_random_angle)
-    return np.column_stack(vx, vy)
+    return vx, vy
 
 def rejection_sample_gauss(rng, n_samples):
     """
