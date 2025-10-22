@@ -77,7 +77,6 @@ def harmonic_equilibrium_checks(
 
     Kavg, Vavg = float(np.mean(Ks)), float(np.mean(Vs))
 
-    # --- plots (unchanged) ---
     plt.figure()
     n, b, _ = plt.hist(xs, bins=40, density=True, label="sim p(x-x0)")
     centers = 0.5 * (b[:-1] + b[1:])
@@ -86,7 +85,7 @@ def harmonic_equilibrium_checks(
     )
     plt.xlabel("x")
     plt.ylabel("pdf")
-    plt.title("Harmonic trap: x-marginal")
+    plt.title("Position (x) distribution")
     plt.legend()
     plt.tight_layout()
 
@@ -119,17 +118,18 @@ def mb_speed_histogram(
     N=200,
     radius=0.02,
     box=1.0,
-    T_bath=1.0,
-    p_specular=0.4,
+    T_bath=20.0,
+    p_specular=0.2,
     seed=3,
     dt=0.01,
-    steps=40000,
-    sample_every=40,
+    steps=100000,
+    sample_every=80
 ):
     rng = np.random.default_rng(seed)
+    sigma=np.sqrt(kB*T_bath/1.0)
     
     r = rng.random(size = (N,2))*box
-    v = rng.normal(0, 0.5, size = (N,2))
+    v = rng.normal(0, sigma, size = (N,2))
     
     parts = HardParticleList(r, v,radius=radius,
                 m=1.0,
@@ -152,7 +152,7 @@ def mb_speed_histogram(
     plt.plot(vgrid, mb_pdf_speed(vgrid, m=1.0, T=T_bath), label="MB theory (2D)")
     plt.xlabel("speed")
     plt.ylabel("pdf")
-    plt.title("Thermal walls → Maxwell-Boltzmann")
+    plt.title(f"Velocity distribution with thermal walls at T={T_bath}")
     plt.legend()
     plt.tight_layout()
 
