@@ -7,6 +7,8 @@
  * To generate Pressure(temperature) plots for hard particles, run `pressure`.
  * To generate time complexity plot, run `time_complexity`
  
+You can also run functions in the `main.py` module to get any combination of these plots.
+ 
  > WARNING
  > 
  > `mb_distribution` and `pressure` are both slow to run, taking ~5 minutes and ~8 minutes, respectively.
