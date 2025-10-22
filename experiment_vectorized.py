@@ -21,7 +21,7 @@ def harmonic_equilibrium_checks(
     Lx=3.0,
     Ly=3.0,
     T_bath=1.0,
-    p_specular=0.4,
+    p_specular=0.4, 
     seed=1,
     dt=0.01,
     steps=40000,
@@ -112,11 +112,13 @@ def mb_speed_histogram(
     radius=0.02,
     box=1.0,
     T_bath=20.0,
+    m = 1.0,
     p_specular=0.2,
     seed=3,
-    dt=0.01,
-    steps=100000,
-    sample_every=80
+    dt=0.001,
+    steps=50000,
+    burn_in = 25000,
+    sample_every=100
 ):
     rng = np.random.default_rng(seed)
     sigma=np.sqrt(kB*T_bath/1.0)
@@ -125,13 +127,15 @@ def mb_speed_histogram(
     v = gaussian_rejection_sampling(0, sigma, rng, (N, 2))
     
     parts = HardParticleList(r, v,radius=radius,
-                m=1.0,
+                m=m,
                 Lx=box,
                 Ly=box,
                 T=T_bath,
                 p_specular=p_specular,
                 seed=int(seed + 200))
-        
+    
+    for _ in range(burn_in):
+        parts.step(dt)
     speeds = []
     for s in range(steps):
         parts.step(dt)
@@ -140,12 +144,13 @@ def mb_speed_histogram(
             speed_sample = (velocities[:,0]**2+velocities[:,1]**2)**0.5
             speeds = np.append(speeds, speed_sample)
     plt.figure()
-    n, b, _ = plt.hist(speeds, bins=50, density=True, label="sim p(v)")
+    n, b, _ = plt.hist(speeds, bins=100, density=True, label="sim p(v)")
     vgrid = np.linspace(0, speeds.max(), 200)
     plt.plot(vgrid, mb_pdf_speed(vgrid, m=1.0, T=T_bath), label="MB theory (2D)")
     plt.xlabel("speed")
     plt.ylabel("pdf")
-    plt.title('Thermal walls → Maxwell-Boltzmann')
+    plt.title('Speed distribution')
+    plt.xlim(0, np.sqrt(4*kB*T_bath/m)*10)
     plt.legend()
     plt.tight_layout()
 
@@ -153,6 +158,7 @@ def mb_speed_histogram(
 def pressure_temperature(
     N=200,
     box=1.0,
+    radius = 0.02,
     T_list=(0.5, 1.0, 1.5, 2.0),
     p_specular=0.4,
     dt=0.01,
@@ -183,7 +189,7 @@ def pressure_temperature(
 
         dp_accum = 0.0
         for _ in range(steps):
-            dp, temp = parts.step(dt)
+            dp, _ = parts.step(dt)
             dp_accum += dp
         time_elapsed = steps * dt
         P_meas = dp_accum / (perim * time_elapsed)
