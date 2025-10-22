@@ -177,11 +177,11 @@ def pressure_temperature(
         r = rng.random(size = (N,2))*box
         v = rng.normal(0, 0.5, size = (N,2))
     
-        parts = HardParticleList(r, v,radius=radius,
+        parts = HardParticleList(r, v,
                     m=1.0,
                     Lx=box,
                     Ly=box,
-                    T=T_bath,
+                    T=T,
                     p_specular=p_specular,
                     seed=int(seed + 200))
 
