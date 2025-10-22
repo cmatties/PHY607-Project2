@@ -18,15 +18,15 @@ def harmonic_equilibrium_checks(
     m=1.0,
     kx=1.0,
     ky=1.0,
-    Lx=3.0,
-    Ly=3.0,
+    Lx=6.0,
+    Ly=6.0,
     T_bath=1.0,
     p_specular=0.4, 
     seed=1,
     dt=0.01,
     steps=40000,
     sample_every=40,
-    burn_in=8000,
+    burn_in=20000,
 ):
     rng = np.random.default_rng(seed)
 
@@ -157,8 +157,7 @@ def mb_speed_histogram(
 
 def pressure_temperature(
     N=200,
-    box=1.0,
-    radius = 0.02,
+    box=6.0,
     T_list=(0.5, 1.0, 1.5, 2.0),
     p_specular=0.4,
     dt=0.01,
